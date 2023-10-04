@@ -1,0 +1,54 @@
+import psycopg2
+import pandas as pd
+
+def conectar_banco():
+    try:
+        conexao = psycopg2.connect(
+            database="ProgramPython",
+            host="localhost",
+            user="postgres",
+            password="postgres",
+            port="5432"
+        )
+        return conexao
+    except psycopg2.Error as e:
+        print("Erro ao conectar ao banco de dados:", e)
+        return None
+
+def obter_dieta(tipo_dieta):
+    conexao = conectar_banco()
+    
+    if conexao:
+        try:
+            if tipo_dieta == 1:
+                print("Selecionando a dieta para emagrecer")  # Adicione esta linha
+                dieta = pd.read_sql('SELECT * FROM emagrecer', conexao)
+            elif tipo_dieta == 2:
+                print("Selecionando a dieta para ganho de massa")
+                dieta = pd.read_sql('SELECT * FROM ganho_massa', conexao)
+            elif tipo_dieta == 3:
+                print("Selecionando a dieta saudavel")
+                dieta = pd.read_sql('SELECT * FROM saudavel', conexao)
+            else:
+                print("Opção Inválida!")
+                return
+            
+            print(dieta)
+        except psycopg2.Error as e:
+            print("Erro ao recuperar dados do banco de dados:", e)
+        finally:
+            conexao.close()
+
+if __name__ == "__main__":
+    print('Escolha qual o tipo de dieta você gostaria de obter:')
+    print('1. Dieta para emagrecer \n'
+          '2. Dieta para ganho de massa \n'
+          '3. Dieta para se alimentar melhor')
+    
+    n_dieta = input()
+    
+    try:
+        n_dieta = int(n_dieta)
+        obter_dieta(n_dieta)
+    except ValueError:
+        print("Opção Inválida! Digite um número válido.")

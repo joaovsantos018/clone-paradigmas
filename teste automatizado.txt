@@ -1,0 +1,30 @@
+import unittest
+from unittest.mock import patch
+from io import StringIO
+from main import obter_dieta
+
+class TestObterDieta(unittest.TestCase):
+
+    @patch('builtins.input', side_effect=['1'])  # Simula a entrada '1' no console
+    def test_obter_dieta_emagrecer(self, mock_input):
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+            obter_dieta(1)
+            output = mock_stdout.getvalue()
+        
+        self.assertIn("Dieta para emagrecer", output)  # Verifica se a saída contém a mensagem esperada
+
+    @patch('builtins.input', side_effect=['2'])  # Simula a entrada '2' no console
+    def test_obter_dieta_ganho_massa(self, mock_input):
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+            obter_dieta(2)
+            output = mock_stdout.getvalue()
+        
+        self.assertIn("Dieta para ganho de massa", output)  # Verifica se a saída contém a mensagem esperada
+
+if __name__ == "__main__":
+    unittest.main()
+
+REALIZAR O TESTE NO TERMINAL COM: 
+
+python -m unittest main_test
+
